@@ -1,1 +1,11 @@
-console.log('THE SERVER IS LIVE')
+console.log('hello')
+// init the socketio connection
+const io = require('socket.io')(3000, {
+    cors: {
+        origin: ['http://localhost:8080']
+    }
+})
+
+io.on('connection', socket => {
+    console.log(socket.id + ' just connected!')
+})

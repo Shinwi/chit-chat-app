@@ -53,8 +53,8 @@ export default {
       this.isChatRoom = true
     },
     joinRoom () {
-      alert('joining room: ' + this.inviteRoomCode)
-      // emit joinRoom
+      // alert('joining room: ' + this.inviteRoomCode)
+      this.socket.emit('joinRoom', {userName: this.userName, roomCode: this.inviteRoomCode})
       this.isChatRoom = true
     }
   }

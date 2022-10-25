@@ -2,7 +2,7 @@
   <div>
     <h1>Room Code: {{ roomCode }}</h1>
     <div class="usersList">
-        <div v-for="(user, idx) in usersInRoom" :key="user.userId">
+        <div v-for="(user, idx) in this.usersInRoom" :key="user.userId">
             <h4>User {{ idx + 1}}: {{ user.userName }}</h4>
         </div>
     </div>
@@ -26,7 +26,6 @@ export default {
     }
   },
   created () {
-    console.log(this.socket)
     this.socket.on('roomInfoUpdate', data => {
         console.log(data)
         this.roomCode = data.roomCode

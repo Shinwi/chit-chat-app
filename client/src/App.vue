@@ -1,30 +1,63 @@
 <template>
   <div id="app">
-    <h1>Chat app</h1>
-    <input type="text" id="message-input" placeholder="Enter Name">
-    <div class="options">
-      <div>
-        <button type="submit" id="send-button">Create room</button>
-      </div>
-      <span>Or</span>
-      <div>
-        <input type="text" id="message-input" placeholder="Enter room code">
-        <button type="submit" id="send-button">Join</button>
-      </div>
+    <div v-if="isChatRoom">
+      <ChatRoom :socket="socket"/>
     </div>
-
-    <!-- <div id="message-container"></div>
-    <form id="send-container">
-      <input type="text" id="message-input">
-      <button type="submit" id="send-button">Send</button>
-    </form> -->
+    <div v-else>
+      <h1>Chat app</h1>
+      <input type="text" id="message-input" placeholder="Enter Name" v-model="userName">
+      <div class="options">
+        <div>
+          <button type="submit" id="send-button" :disabled="!userName.length" @click="createRoom()">Create room</button>
+        </div>
+        <span>Or</span>
+        <div>
+          <input type="text" id="message-input" placeholder="Enter room code" v-model="inviteRoomCode"> 
+          <button type="submit" id="send-button" @click="joinRoom()">Join</button>
+        </div>
+      </div>
+   </div>
   </div>
 </template>
 
 <script>
+import io from 'socket.io-client'
+import ChatRoom from './components/ChatRoom.vue'
 
 export default {
   name: 'App',
+  data () {
+    return {
+      socket: {},
+      userName: '',
+      inviteRoomCode: '',
+      isChatRoom: false
+    }
+  },
+  components: {
+    ChatRoom
+  },
+  created () {
+    // giving the socket obj the address of our (local) server
+    this.socket = io('http://localhost:3000')
+
+    // connecting to the server
+    this.socket.on('connect', () => {
+      console.log('user id: ' + this.socket.id)
+    })
+  },
+  methods: {
+    createRoom () {
+      // alert('creating room: ' + this.playerName)
+      this.socket.emit('createRoom', {userName: this.userName})
+      this.isChatRoom = true
+    },
+    joinRoom () {
+      alert('joining room: ' + this.inviteRoomCode)
+      // emit joinRoom
+      this.isChatRoom = true
+    }
+  }
 }
 </script>
 

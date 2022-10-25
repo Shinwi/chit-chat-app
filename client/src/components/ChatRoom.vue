@@ -1,6 +1,11 @@
 <template>
   <div>
-    <h1>Room Code:</h1>
+    <h1>Room Code: {{ roomCode }}</h1>
+    <div class="usersList">
+        <div v-for="(user, idx) in usersInRoom" :key="user.userId">
+            <h4>User {{ idx + 1}}: {{ user.userName }}</h4>
+        </div>
+    </div>
     <div id="message-container"></div>
     <form id="send-container">
       <input type="text" id="message-input">
@@ -13,10 +18,33 @@
 
 export default {
   name: 'ChatRoom',
+  props: ['socket'],
+  data () {
+    return {
+        roomCode: '',
+        usersInRoom: []
+    }
+  },
+  created () {
+    console.log(this.socket)
+    this.socket.on('roomInfoUpdate', data => {
+        console.log(data)
+        this.roomCode = data.roomCode
+        this.usersInRoom = data.allUsersInRoom
+    })
+  }
 }
 </script>
 
 <style>
+.usersList {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin: auto;
+  margin-bottom: 20px;
+  height: 100px;
+}
 /*chat messages styling*/
 body {
     padding: 0;

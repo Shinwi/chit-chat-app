@@ -7,10 +7,10 @@
         </div>
     </div>
     <div id="message-container"></div>
-    <form id="send-container">
-      <input type="text" id="message-input">
-      <button type="submit" id="send-button">Send</button>
-    </form>
+    <div id="send-container">
+      <input type="text" id="message-input" v-model="chatMessage">
+      <button type="submit" id="send-button" @click="sendMessage()">Send</button>
+    </div>
   </div>
 </template>
 
@@ -22,15 +22,39 @@ export default {
   data () {
     return {
         roomCode: '',
+        chatMessage:'',
         usersInRoom: []
     }
   },
   created () {
     this.socket.on('roomInfoUpdate', data => {
-        console.log(data)
         this.roomCode = data.roomCode
         this.usersInRoom = data.allUsersInRoom
+    }),
+    this.socket.on('receivedMessage', data => {
+        this.displayReceiverMessage(data.receivedMessage)
     })
+  },
+  methods: {
+    sendMessage () {
+        if (this.chatMessage.length === 0) return
+        this.displaySenderMessage(this.chatMessage)
+        this.socket.emit('sendMessage', {message: this.chatMessage, roomCode: this.roomCode})
+        this.chatMessage = ''
+    },
+    displaySenderMessage (message) {
+        let messageElement = document.createElement('p')
+        let sender = this.usersInRoom.filter(u => u.userId === this.socket.id)
+        messageElement.innerHTML = `${sender[0].userName}: ${message}`
+        document.getElementById('message-container').appendChild(messageElement)
+    },
+    // this will only work when there is only 2 people in the room
+    displayReceiverMessage (message) {
+        let messageElement = document.createElement('p')
+        let receiver = this.usersInRoom.filter(u => u.userId !== this.socket.id)
+        messageElement.innerHTML = `${receiver[0].userName}: ${message}`
+        document.getElementById('message-container').appendChild(messageElement)
+    }
   }
 }
 </script>
@@ -72,7 +96,7 @@ body {
     bottom: 0;
     background-color: white;
     max-width: 1200px;
-    width: 80%;
+    width: 60%;
     display: flex;
 }
 

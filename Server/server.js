@@ -35,4 +35,9 @@ io.on('connection', socket => {
         let allUsersInRoom = getUsersInRoom(roomCode)
         io.sockets.in(roomCode).emit('roomInfoUpdate', {roomCode, userName, allUsersInRoom })
     })
+
+    // sending messages in given chatroom
+    socket.on('sendMessage', (payload) => {
+        socket.to(payload.roomCode).emit('receivedMessage', {receivedMessage: payload.message})
+    })
 })

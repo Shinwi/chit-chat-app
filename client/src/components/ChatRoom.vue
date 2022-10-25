@@ -96,8 +96,9 @@ body {
     bottom: 0;
     background-color: white;
     max-width: 1200px;
-    width: 60%;
-    display: flex;
+    width: 40%;
+    margin: auto;
+    display: flex; 
 }
 
 #message-input {

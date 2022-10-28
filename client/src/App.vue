@@ -1,9 +1,9 @@
 <template>
-  <div id="app">
+  <div>
     <div v-if="isChatRoom">
       <ChatRoom :socket="socket"/>
     </div>
-   <div v-else>
+   <div v-else class="homePage">
       <div class="wrapper">
         <h1>Welcome!</h1>
         <p>Have a chat!</p>
@@ -72,7 +72,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
 *{
@@ -84,10 +84,16 @@ export default {
 body{
   background: #dfe9f5;
 }
+.homePage {
+  border: thin solid violet;
+  width: 100vw;
+  height: 100vh;
+}
 .wrapper{
+  border: thick solid green;
   width: 330px;
   padding: 2rem 0 1rem 0;
-  margin: 50px auto;
+  margin: 80px auto;
   background: #fff;
   border-radius: 10px;
   text-align: center;
